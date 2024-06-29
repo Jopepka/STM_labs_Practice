@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        Console.WriteLine("Задание 1. Сумма минимального и максимального.");
+        Console.WriteLine(Task1<double>.SumMinAndMax(2, 10, 7));
     }
 }
