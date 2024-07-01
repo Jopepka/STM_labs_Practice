@@ -1,6 +1,6 @@
 public static class Task2
 {
-    public static int[] GetCountAmebs()
+    public static IEnumerable<int> GetCountAmebs()
     {
         int[] countAmebs = new int[24 / 3];
         for (int i = 0; i < 24 / 3; i++)

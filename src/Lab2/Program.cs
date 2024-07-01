@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        Console.WriteLine("Задание 2. Количество амеб через 3, 6, ... 24 часа");
+        Console.WriteLine(string.Join(", ", Task2.GetCountAmebs()));
     }
 }
