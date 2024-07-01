@@ -1,5 +1,3 @@
-using System.Xml;
-
 public static class Task4<T>
 {
     public static int GetCountOverlap(IEnumerable<T> plenty1, IEnumerable<T> plenty2)
