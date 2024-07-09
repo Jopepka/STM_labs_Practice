@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Numerics;
-
-namespace Lab3;
+﻿namespace Lab3;
 
 class Program
 {
