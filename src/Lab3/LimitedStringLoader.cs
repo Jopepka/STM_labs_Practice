@@ -1,14 +1,14 @@
+using System.Text.RegularExpressions;
+
 public class LimitedStringLoader
 {
-    public readonly string prohibited; // игнорируемые символы
-    public readonly string erroneous; // ошибочные символы
+    public readonly string prohibited;
+    public readonly string erroneous;
     public readonly int proLimit;
 
     private bool _isLoaded = false;
-    private List<string> _loadedFileLines;
-    // Если пользователь пытается обратиться к загруженному списку (через свойство) до вызова метода Load, 
-    // то должно генерироваться исключение DataNotLoaded
-    public List<string> LoadedFileLines { get => _isLoaded ? _loadedFileLines : throw new Exception(); }
+    private List<string> _loadedLines;
+    public List<string> LoadedLines { get => _isLoaded ? _loadedLines : throw new DataNotLoaded(); }
 
     public LimitedStringLoader(string prohibited, string erroneous, int proLimit)
     {
@@ -19,42 +19,61 @@ public class LimitedStringLoader
         this.proLimit = proLimit;
     }
 
-    //должно генерироваться исключение InconsistentLimits, содержащее информацию о символах в пересечении.
-    private void CheckIntersectionStrings(string str1, string str2)
-    {
-        if (str1.Intersect(str2).Count() > 0)
-            throw new Exception();
-    }
-
     public void Load(string filename)
     {
-        // CheckIsFileExist(filename);
-        List<string> lines = new List<string>();
         using (StreamReader sr = new StreamReader(filename))
         {
-            while (sr.Peek() != -1)
-            {
-                string line = sr.ReadLine() ?? "";
-                char sign = line[0];
+            List<string> loadedLines = new List<string>();
 
-                if (prohibited.Contains(sign))
+            for (int lineNumber = 0, countProhibitedLines = 0; sr.Peek() != -1; lineNumber++)
+            {
+                string? line = sr.ReadLine();
+                if (line is null)
                     continue;
 
-                if (erroneous.Contains(sign))
-                    throw new Exception(); // WrongStartingSymbol
+                CheckWrongStartingSymbol(line, lineNumber);
+                CheckCorrectLine(line, lineNumber);
 
-                if (sign < 'A' || sign > 'Z')
-                    throw new Exception(); // IncorrectString
+                if (IsIgnore(line))
+                {
+                    CheckLimitProhibitedLines(countProhibitedLines);
+                    countProhibitedLines++;
+                    continue;
+                }
 
-                lines.Append(line);
+                loadedLines.Append(line);
             }
+
+            _loadedLines = loadedLines;
+            _isLoaded = true;
         }
     }
 
-    private void CheckIsFileExist(string filename)
+    private void CheckIntersectionStrings(string str1, string str2)
     {
-        if (File.Exists(filename))
-            throw new FileNotFoundException();
+        var intersectItems = str1.Intersect(str2);
+        if (intersectItems.Count() > 0)
+            throw new InconsistentLimits(intersectItems, $"There are matching characters: {string.Join(", ", intersectItems)}");
+    }
+
+    private bool IsIgnore(string line) => prohibited.Contains(line[0]);
+
+    private void CheckLimitProhibitedLines(int countProhibitedLines)
+    {
+        if (countProhibitedLines == proLimit)
+            throw new TooManyProhibitedLines();
+    }
+
+    private void CheckWrongStartingSymbol(string line, int lineNumber)
+    {
+        if (erroneous.Contains(line[0]))
+            throw new WrongStartingSymbol(line[0], lineNumber, $"Line {lineNumber}, wrong start sign '{line[0]}'");
+    }
+
+    private void CheckCorrectLine(string line, int lineNumber)
+    {
+        if (Regex.IsMatch(line, @"^[A-Z](\s-?\d+(\.\d+)?)*$"))
+            throw new IncorrectString(lineNumber, $"Line {lineNumber}, incorrect string");
     }
 
 }
