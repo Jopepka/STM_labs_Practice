@@ -8,6 +8,7 @@ public class LimitedStringLoader
 
     private bool _isLoaded = false;
     private List<string> _loadedLines;
+
     public List<string> LoadedLines
     {
         get => _isLoaded ? _loadedLines : throw new DataNotLoaded("You must first successfully load the file");
@@ -102,7 +103,7 @@ public class LimitedStringLoader
     private void CheckLimitProhibitedLines(int countProhibitedLines)
     {
         if (countProhibitedLines > proLimit)
-            throw new TooManyProhibitedLines();
+            throw new TooManyProhibitedLines($"The number of missing lines has been exceeded. No more than {proLimit} passes are allowed");
     }
 
 }

@@ -1,6 +1,9 @@
 using System.Collections;
 
-public class DataNotLoaded : InvalidOperationException { }
+public class DataNotLoaded : InvalidOperationException
+{
+    public DataNotLoaded(string message) : base(message) { }
+}
 
 public class InconsistentLimits : ArgumentException
 {
@@ -31,4 +34,7 @@ public class WrongStartingSymbol : IncorrectString
     }
 }
 
-public class TooManyProhibitedLines : Exception { }
+public class TooManyProhibitedLines : Exception
+{
+    public TooManyProhibitedLines(string message) : base(message) { }
+}
