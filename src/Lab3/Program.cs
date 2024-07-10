@@ -4,6 +4,9 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine("Задане 1. Калькулятор");
+        ConsoleCalculator.Run();
+
         Console.WriteLine("Задание 2. Дни недели");
         var dayOWeek = Task2.GetDayOWeekFunc();
         Console.WriteLine(dayOWeek()); // Понедельник
@@ -31,4 +34,5 @@ class Program
         publisher1.RaiseEvent();
         publisher2.RaiseEvent();
     }
+
 }
