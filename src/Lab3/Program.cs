@@ -4,6 +4,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        LimitedStringLoader a = new LimitedStringLoader(null, null, 2);
+        Console.WriteLine("Задание 5. Чтение файла");
+        LimitedStringLoader a = new LimitedStringLoader("de", "htp", 2);
+        a.Load("task5_testData.txt");
+        Console.WriteLine(string.Join("\n", a.LoadedLines));
     }
 }
