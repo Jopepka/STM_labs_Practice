@@ -29,7 +29,7 @@ public class LimitedStringLoader
     private void CheckNotNull(string str)
     {
         if (str is null)
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(str));
     }
 
     private void CheckNotNegative(int number)
@@ -42,40 +42,44 @@ public class LimitedStringLoader
     {
         var intersectItems = str1.Intersect(str2);
         if (intersectItems.Count() > 0)
-            throw new InconsistentLimits(intersectItems, $"There are matching characters: {string.Join(", ", intersectItems)}");
+            throw new InconsistentLimits(intersectItems);
     }
 
     public void Load(string filename)
     {
         CheckFileExist(filename);
+        ProcessingFile(filename);
+    }
 
-        using (StreamReader sr = new StreamReader(filename))
+    private void ProcessingFile(string filename)
+    {
+        using StreamReader sr = new StreamReader(filename);
+
+        _isLoaded = false;
+        List<string> loadedLines = new List<string>();
+
+        for (int lineNumber = 1, countProhibitedLines = 0; sr.Peek() != -1; lineNumber++)
         {
-            _isLoaded = false;
-            List<string> loadedLines = new List<string>();
+            string? line = sr.ReadLine();
 
-            for (int lineNumber = 1, countProhibitedLines = 0; sr.Peek() != -1; lineNumber++)
+            if (IsEmptyLine(line))
+                continue;
+
+            CheckCorrectLine(line, lineNumber);
+            CheckValidStartingSymbol(line, lineNumber);
+
+            if (IsIgnore(line))
             {
-                string? line = sr.ReadLine();
-                if (line is null || line == "")
-                    continue;
-
-                CheckCorrectLine(line, lineNumber);
-                CheckValidStartingSymbol(line, lineNumber);
-
-                if (IsIgnore(line))
-                {
-                    CheckLimitProhibitedLines(countProhibitedLines);
-                    countProhibitedLines++;
-                    continue;
-                }
-
-                loadedLines.Add(line);
+                CheckLimitProhibitedLines(countProhibitedLines);
+                countProhibitedLines++;
+                continue;
             }
 
-            _loadedLines = loadedLines;
-            _isLoaded = true;
+            loadedLines.Add(line);
         }
+
+        _loadedLines = loadedLines;
+        _isLoaded = true;
     }
 
     private void CheckFileExist(string filename)
@@ -84,18 +88,20 @@ public class LimitedStringLoader
             throw new FileNotFoundException($"file {Path.GetFullPath(filename)} not found");
     }
 
+    private bool IsEmptyLine(string? line) => line is null || line == "";
+
     // Проверяет строку на формат:
     // прописная_латинская_буква список_вещественных_чисел, где элементы списка чисел разделяются пробелами
     private void CheckCorrectLine(string line, int lineNumber)
     {
         if (!Regex.IsMatch(line, @"^[A-Z](\s-?\d+(\.\d+)?)*$"))
-            throw new IncorrectString(lineNumber, $"Line {lineNumber}, incorrect string");
+            throw new IncorrectString(lineNumber);
     }
 
     private void CheckValidStartingSymbol(string line, int lineNumber)
     {
         if (erroneous.Contains(line[0]))
-            throw new WrongStartingSymbol(line[0], lineNumber, $"Line {lineNumber}, wrong start sign '{line[0]}'");
+            throw new WrongStartingSymbol(line[0], lineNumber);
     }
 
     private bool IsIgnore(string line) => prohibited.Contains(line[0]);
@@ -103,7 +109,7 @@ public class LimitedStringLoader
     private void CheckLimitProhibitedLines(int countProhibitedLines)
     {
         if (countProhibitedLines > proLimit)
-            throw new TooManyProhibitedLines($"The number of missing lines has been exceeded. No more than {proLimit} passes are allowed");
+            throw new TooManyProhibitedLines();
     }
 
 }

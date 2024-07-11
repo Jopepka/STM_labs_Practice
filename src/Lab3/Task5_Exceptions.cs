@@ -8,7 +8,7 @@ public class DataNotLoaded : InvalidOperationException
 public class InconsistentLimits : ArgumentException
 {
     public readonly IEnumerable intersectionChars;
-    public InconsistentLimits(IEnumerable intersectionChars, string message) : base(message)
+    public InconsistentLimits(IEnumerable intersectionChars) : base($"There are matching characters: {string.Join(", ", intersectionChars)}")
     {
         this.intersectionChars = intersectionChars;
     }
@@ -22,13 +22,16 @@ public class IncorrectString : Exception
     {
         this.lineNumber = lineNumber;
     }
+
+    public IncorrectString(int lineNumber) : this(lineNumber, $"Line {lineNumber}, incorrect string") { }
+
 }
 
 public class WrongStartingSymbol : IncorrectString
 {
     public readonly char startCharOfLine;
 
-    public WrongStartingSymbol(char startCharOfLine, int lineNumber, string message) : base(lineNumber, message)
+    public WrongStartingSymbol(char startCharOfLine, int lineNumber) : base(lineNumber, $"Line {lineNumber}, wrong start sign '{startCharOfLine}'")
     {
         this.startCharOfLine = startCharOfLine;
     }
@@ -36,5 +39,5 @@ public class WrongStartingSymbol : IncorrectString
 
 public class TooManyProhibitedLines : Exception
 {
-    public TooManyProhibitedLines(string message) : base(message) { }
+    public TooManyProhibitedLines() : base($"The number of missing lines has been exceeded") { }
 }
