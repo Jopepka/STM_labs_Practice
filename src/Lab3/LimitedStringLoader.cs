@@ -16,8 +16,8 @@ public class LimitedStringLoader
 
     public LimitedStringLoader(string prohibited, string erroneous, int proLimit)
     {
-        CheckNotNull(prohibited);
-        CheckNotNull(erroneous);
+        CheckNotNull(prohibited, nameof(prohibited));
+        CheckNotNull(erroneous, nameof(erroneous));
         CheckNotIntersection(prohibited, erroneous);
         CheckNotNegative(proLimit);
 
@@ -26,10 +26,10 @@ public class LimitedStringLoader
         this.proLimit = proLimit;
     }
 
-    private void CheckNotNull(string str)
+    private void CheckNotNull(object argument, string argumentName)
     {
-        if (str is null)
-            throw new ArgumentNullException(nameof(str));
+        if (argument is null)
+            throw new ArgumentNullException(argumentName);
     }
 
     private void CheckNotNegative(int number)
