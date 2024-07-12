@@ -2,7 +2,7 @@ using System.Collections;
 
 public class DataNotLoaded : InvalidOperationException
 {
-    public DataNotLoaded(string message) : base(message) { }
+    public DataNotLoaded() : base("You must first successfully load the file") { }
 }
 
 public class InconsistentLimits : ArgumentException

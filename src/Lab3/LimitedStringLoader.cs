@@ -6,12 +6,11 @@ public class LimitedStringLoader
     public readonly string erroneous;
     public readonly int proLimit;
 
-    private bool _isLoaded = false;
-    private List<string> _loadedLines;
+    private List<string>? _loadedLines;
 
     public List<string> LoadedLines
     {
-        get => _isLoaded ? _loadedLines : throw new DataNotLoaded("You must first successfully load the file");
+        get => _loadedLines ?? throw new DataNotLoaded();
     }
 
     public LimitedStringLoader(string prohibited, string erroneous, int proLimit)
@@ -55,7 +54,7 @@ public class LimitedStringLoader
     {
         using StreamReader sr = new StreamReader(filename);
 
-        _isLoaded = false;
+        _loadedLines = null;
         List<string> loadedLines = new List<string>();
 
         for (int lineNumber = 1, countProhibitedLines = 0; sr.Peek() != -1; lineNumber++)
@@ -79,7 +78,6 @@ public class LimitedStringLoader
         }
 
         _loadedLines = loadedLines;
-        _isLoaded = true;
     }
 
     private void CheckFileExist(string filename)
