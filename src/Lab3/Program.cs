@@ -33,6 +33,11 @@ class Program
 
         publisher1.RaiseEvent();
         publisher2.RaiseEvent();
+      
+        Console.WriteLine("Задание 5. Чтение файла");
+        LimitedStringLoader a = new LimitedStringLoader("de", "htp", 2);
+        a.Load("task5_testData.txt");
+        Console.WriteLine(string.Join("\n", a.LoadedLines));
     }
 
 }
