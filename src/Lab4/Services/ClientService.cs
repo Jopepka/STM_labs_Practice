@@ -18,11 +18,13 @@ internal class ClientService
 
     public Client GetClientById(int clientId, AccessLevel level)
     {
-        var user = _bd.GetById(clientId);
+        var user = GetClientById(clientId);
         if (level == AccessLevel.Lower)
             user = FormatClientForLowerLevelAccess(user);
         return user;
     }
+
+    private Client GetClientById(int clientId) => _bd.GetById(clientId);
 
     public void AddClient(Client client, IEmployee employee)
     {
@@ -30,12 +32,11 @@ internal class ClientService
         _bd.Add(client);
     }
 
-
     public void UpdateFirstName(int clientId, string newName, IEmployee employee)
     {
         CheckHightLevelAccess(employee.GetAccessLevel());
 
-        var client = GetClientById(clientId, employee.GetAccessLevel());
+        var client = GetClientById(clientId);
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
@@ -54,7 +55,7 @@ internal class ClientService
     {
         CheckHightLevelAccess(employee.GetAccessLevel());
 
-        var client = GetClientById(clientId, employee.GetAccessLevel());
+        var client = GetClientById(clientId);
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
@@ -73,7 +74,7 @@ internal class ClientService
     {
         CheckHightLevelAccess(employee.GetAccessLevel());
 
-        var client = GetClientById(clientId, employee.GetAccessLevel());
+        var client = GetClientById(clientId);
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
@@ -92,7 +93,7 @@ internal class ClientService
     {
         CheckLowLevelAccess(employee.GetAccessLevel());
 
-        var client = GetClientById(clientId, employee.GetAccessLevel());
+        var client = GetClientById(clientId);
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
@@ -111,7 +112,7 @@ internal class ClientService
     {
         CheckHightLevelAccess(employee.GetAccessLevel());
 
-        var client = GetClientById(clientId, employee.GetAccessLevel());
+        var client = GetClientById(clientId);
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
@@ -130,7 +131,7 @@ internal class ClientService
     {
         CheckHightLevelAccess(employee.GetAccessLevel());
 
-        var client = GetClientById(clientId, employee.GetAccessLevel());
+        var client = GetClientById(clientId);
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
