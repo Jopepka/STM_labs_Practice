@@ -1,8 +1,8 @@
-internal interface IDataBase<T>
+internal interface IDataBase<T, K>
 {
-    T GetById(int id);
+    T GetById(K id);
 
-    void Update(T newValue, int id);
+    void Update(T newValue, K id);
 
     void Add(T value);
 }

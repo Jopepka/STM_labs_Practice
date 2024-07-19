@@ -9,6 +9,6 @@ internal class FileLoader
         return items;
     }
 
-    public static void Save<T>(Dictionary<int, T> items, string fileName) =>
+    public static void Save<T, K>(Dictionary<K, T> items, string fileName) =>
         File.WriteAllText(fileName, JsonSerializer.Serialize(items.ToArray()));
 }
