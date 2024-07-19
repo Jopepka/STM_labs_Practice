@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 internal class ClientChangesFileTable : AFileTable<FieldChangeInfo, int>
 {
     int nextKey;

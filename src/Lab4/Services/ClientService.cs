@@ -1,6 +1,3 @@
-
-using System.ComponentModel;
-
 internal class ClientService
 {
     private readonly IDataBase<Client, int> _bd;
