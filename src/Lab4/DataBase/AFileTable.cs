@@ -6,6 +6,8 @@ internal abstract class AFileTable<T, K> : IDataBase<T, K>
 
     public void Save(string fileName) => FileLoader.Save(_items, fileName);
 
+    public IEnumerable<T> GetAll() => _items.Select(item => item.Value);
+
     public void Add(T value)
     {
         var newId = GetNextFirstKey();

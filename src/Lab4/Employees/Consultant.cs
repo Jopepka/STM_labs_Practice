@@ -1,27 +1,13 @@
 internal class Consultant : IEmployee
 {
-    protected readonly ClientService _userService;
+    public string Name { get; }
 
-    public Consultant(ClientService userService) => _userService = userService;
+    public Consultant(string name) => Name = name;
 
-    public void UpdatePhoneNumber(Client client, int phoneNumber)
+    public virtual AccessLevel GetAccessLevel() => AccessLevel.Lower;
+
+    public string UserToString()
     {
-        var changes = new FieldChangeInfo()
-        {
-            FieldName = "PhoneNumber",
-            OldValue = client.PhoneNumber.ToString(),
-            NewValue = phoneNumber.ToString()
-        };
-
-        var updatedClient = client with { PhoneNumber = phoneNumber };
-        UpdateClient(changes, updatedClient);
+        throw new NotImplementedException();
     }
-
-    protected void UpdateClient(FieldChangeInfo changes, Client client)
-    {
-        changes = changes with { ChangeTime = DateTime.Now, Editor = GetType().Name };
-        _userService.UpdateClient(changes, client);
-    }
-
-    public virtual Client GetClient(int id) => _userService.GetClientById(id) with { PassportNumber = 0, PassportSeries = 0 };
 }
