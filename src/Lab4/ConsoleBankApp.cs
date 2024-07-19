@@ -1,24 +1,32 @@
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 internal class ConsoleBankApp
 {
     string _clientsPath;
     string _clientsLogsPath;
-    ClientService _userService;
-    AFileTable<Client, int> _bd;
+    ClientService _clientService;
+    UserChangesService _changesService;
+    ClientFileTable _clientBd;
+    ClientChangesFileTable _changesBd;
     IEmployee _employee;
 
     public ConsoleBankApp(string clientsPath, string clientsLogsPath)
     {
         _clientsPath = clientsPath;
         _clientsLogsPath = clientsLogsPath;
+
+        _clientBd = new ClientFileTable(_clientsPath);
+        _clientService = new ClientService(_clientBd);
+
+        _changesBd = new ClientChangesFileTable(_clientsLogsPath);
+        _changesService = new UserChangesService(_changesBd);
+
+        _clientService.SubscribeOnClientUpdate(_changesService.Add);
     }
 
     public void Start()
     {
-        var bd = new ClientFileTable(_clientsPath);
-        _userService = new ClientService(bd, new ClientsFileLogger(_clientsLogsPath));
-        _bd = bd;
         SelectRole();
         SelectOperation();
     }
@@ -63,7 +71,7 @@ internal class ConsoleBankApp
             switch (Console.ReadLine())
             {
                 case "1":
-                    var clients = _userService.GetAll(_employee.GetAccessLevel());
+                    var clients = _clientService.GetAll(_employee.GetAccessLevel());
                     Console.WriteLine(string.Join("\n", clients.Select(ClientToString)));
                     break;
                 case "2":
@@ -71,11 +79,11 @@ internal class ConsoleBankApp
                     break;
 
                 case "3":
-                    _userService.AddClient(GetClientFromConsole(), _employee);
+                    _clientService.AddClient(GetClientFromConsole(), _employee);
                     break;
 
                 case "4":
-                    _bd.Save(_clientsPath);
+                    _clientBd.Save(_clientsPath);
                     break;
                 case "5":
                     return;
@@ -92,6 +100,16 @@ internal class ConsoleBankApp
         Console.WriteLine("Введите id пользователя: ");
         int userId = GetNumberFromConsole<int>();
 
+        var user = _clientService.GetClientById(userId, _employee.GetAccessLevel());
+        var userChanges = _changesService.FindByClientId(userId);
+        Console.WriteLine("Выбранный пользователь:");
+        Console.WriteLine(ClientToString(user));
+        if (userChanges.Count() != 0)
+        {
+            Console.WriteLine("Последние изменения:");
+            Console.WriteLine(ClientChangesLogToString(userChanges.MaxBy(item => item.ChangeTime)));
+        }
+
         Console.WriteLine("Изменить:");
         Console.WriteLine("1. фамилию (доступно только менеджеру)");
         Console.WriteLine("2. имя (доступно только менеджеру)");
@@ -104,32 +122,32 @@ internal class ConsoleBankApp
             case "1":
                 Console.WriteLine("Введите фамилию");
                 string firstName = Console.ReadLine();
-                _userService.UpdateFirstName(userId, firstName, _employee);
+                _clientService.UpdateFirstName(userId, firstName, _employee);
                 break;
             case "2":
                 Console.WriteLine("Введите имя");
                 string middleName = Console.ReadLine();
-                _userService.UpdateMiddleName(userId, middleName, _employee);
+                _clientService.UpdateMiddleName(userId, middleName, _employee);
                 break;
             case "3":
                 Console.WriteLine("Введите отчество");
                 string lastName = Console.ReadLine();
-                _userService.UpdateLastName(userId, lastName, _employee);
+                _clientService.UpdateLastName(userId, lastName, _employee);
                 break;
             case "4":
                 Console.WriteLine("Введите номер телефона");
                 string phoneNumber = Console.ReadLine();
-                _userService.UpdatePhoneNumber(userId, phoneNumber, _employee);
+                _clientService.UpdatePhoneNumber(userId, phoneNumber, _employee);
                 break;
             case "5":
                 Console.WriteLine("Введите серию паспорта");
                 string passportSeries = Console.ReadLine();
-                _userService.UpdatePassportSeries(userId, passportSeries, _employee);
+                _clientService.UpdatePassportSeries(userId, passportSeries, _employee);
                 break;
             case "6":
                 Console.WriteLine("Введите номер паспорта");
                 string passportNumber = Console.ReadLine();
-                _userService.UpdatePassportNumber(userId, passportNumber, _employee);
+                _clientService.UpdatePassportNumber(userId, passportNumber, _employee);
                 break;
             default:
                 return;
@@ -174,6 +192,18 @@ internal class ConsoleBankApp
         res += $"\nName: {client.FirstName} {client.MidleName} {client.LastName}";
         res += $"\nPhone: {client.PhoneNumber}";
         res += $"\nPassport: {client.PassportNumber} {client.PassportSeries}";
+        return res;
+    }
+
+    private string ClientChangesLogToString(FieldChangeInfo changeInfo)
+    {
+
+        string res = "Changes";
+        res += $"\nid: {changeInfo.Id}";
+        res += $"\nClientId: {changeInfo.IdEntity}";
+        res += $"\nUpdate time: {changeInfo.ChangeTime}";
+        res += $"\nEditor: {changeInfo.Editor}";
+        res += $"\nField '{changeInfo.FieldName}': {changeInfo.OldValue} -> {changeInfo.NewValue}";
         return res;
     }
 
