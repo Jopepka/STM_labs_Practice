@@ -1,8 +1,8 @@
 internal class ClientFileTable : AFileTable<Client, int>
 {
-    int newId;
+    int nextKey;
 
-    public ClientFileTable(string fileName) : base(fileName) => newId = _items.Max(item => item.Key) + 1;
+    public ClientFileTable(string fileName) : base(fileName) => nextKey = _items.Count() == 0 ? 0 : _items.Max(item => item.Key) + 1;
 
     protected override void CheckUniqueFields(Client item, int ignoreKey)
     {
@@ -17,5 +17,5 @@ internal class ClientFileTable : AFileTable<Client, int>
 
     protected override int GetFirstKey(Client item) => item.id;
 
-    protected override int GetNextFirstKey() => newId++;
+    protected override int GetNextFirstKey() => nextKey++;
 }

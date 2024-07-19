@@ -4,7 +4,7 @@ internal abstract class AFileTable<T, K> : IDataBase<T, K>
 
     public AFileTable(string fileName) => _items = CreateDict(FileLoader.Load<T>(fileName));
 
-    public void Save(string fileName) => FileLoader.Save(_items, fileName);
+    public void Save(string fileName) => FileLoader.Save(_items.Select(item => item.Value).ToArray(), fileName);
 
     public IEnumerable<T> GetAll() => _items.Select(item => item.Value);
 

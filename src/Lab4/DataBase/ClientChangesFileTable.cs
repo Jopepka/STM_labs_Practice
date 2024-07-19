@@ -2,7 +2,7 @@ internal class ClientChangesFileTable : AFileTable<FieldChangeInfo, int>
 {
     int nextKey;
 
-    public ClientChangesFileTable(string fileName) : base(fileName) => nextKey = _items.Max(item => item.Key) + 1;
+    public ClientChangesFileTable(string fileName) : base(fileName) => nextKey = _items.Count() == 0 ? 0 : _items.Max(item => item.Key) + 1;
 
     protected override void CheckUniqueFields(FieldChangeInfo item, int ignoreKey) { }
 
