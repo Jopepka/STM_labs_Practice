@@ -1,4 +1,6 @@
 
+using System.ComponentModel;
+
 internal class ClientService
 {
     private readonly IDataBase<Client, int> _bd;
@@ -40,15 +42,12 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            ChangeTime = DateTime.Now,
-            IdEntity = client.id,
-            Editor = employee.Name,
-            FieldName = client.FirstName.GetType().Name,
+            FieldName = nameof(client.FirstName),
             NewValue = newName,
             OldValue = client.FirstName,
         };
 
-        UpdateClient(changeInfo, client with { FirstName = newName });
+        UpdateClient(changeInfo, client with { FirstName = newName }, employee);
     }
 
     public void UpdateMiddleName(int clientId, string newMiddleName, IEmployee employee)
@@ -59,15 +58,12 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            ChangeTime = DateTime.Now,
-            IdEntity = client.id,
-            Editor = employee.Name,
-            FieldName = client.MidleName.GetType().Name,
+            FieldName = nameof(client.MidleName),
             NewValue = newMiddleName,
             OldValue = client.MidleName,
         };
 
-        UpdateClient(changeInfo, client with { MidleName = newMiddleName });
+        UpdateClient(changeInfo, client with { MidleName = newMiddleName }, employee);
     }
 
     public void UpdateLastName(int clientId, string newLastName, IEmployee employee)
@@ -78,15 +74,12 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            ChangeTime = DateTime.Now,
-            IdEntity = client.id,
-            Editor = employee.Name,
-            FieldName = client.LastName.GetType().Name,
+            FieldName = nameof(client.LastName),
             NewValue = newLastName,
             OldValue = client.LastName,
         };
 
-        UpdateClient(changeInfo, client with { MidleName = newLastName });
+        UpdateClient(changeInfo, client with { MidleName = newLastName }, employee);
     }
 
     public void UpdatePhoneNumber(int clientId, string newPhoneNumber, IEmployee employee)
@@ -97,15 +90,12 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            ChangeTime = DateTime.Now,
-            IdEntity = client.id,
-            Editor = employee.Name,
-            FieldName = client.PhoneNumber.GetType().Name,
+            FieldName = nameof(client.PhoneNumber),
             NewValue = newPhoneNumber,
             OldValue = client.PhoneNumber,
         };
 
-        UpdateClient(changeInfo, client with { PhoneNumber = newPhoneNumber });
+        UpdateClient(changeInfo, client with { PhoneNumber = newPhoneNumber }, employee);
     }
 
     public void UpdatePassportSeries(int clientId, string newPassportSeries, IEmployee employee)
@@ -116,15 +106,12 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            ChangeTime = DateTime.Now,
-            IdEntity = client.id,
-            Editor = employee.Name,
-            FieldName = client.PassportSeries.GetType().Name,
+            FieldName = nameof(client.PassportSeries),
             NewValue = newPassportSeries,
             OldValue = client.PassportSeries,
         };
 
-        UpdateClient(changeInfo, client with { PassportSeries = newPassportSeries });
+        UpdateClient(changeInfo, client with { PassportSeries = newPassportSeries }, employee);
     }
 
     public void UpdatePassportNumber(int clientId, string newPassportNumber, IEmployee employee)
@@ -135,21 +122,19 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            ChangeTime = DateTime.Now,
-            IdEntity = client.id,
-            Editor = employee.Name,
-            FieldName = client.PassportNumber.GetType().Name,
+            FieldName = nameof(client.PassportNumber),
             NewValue = newPassportNumber,
             OldValue = client.PassportNumber,
         };
 
-        UpdateClient(changeInfo, client with { PassportNumber = newPassportNumber });
+        UpdateClient(changeInfo, client with { PassportNumber = newPassportNumber }, employee);
     }
 
-    private void UpdateClient(FieldChangeInfo change, Client newClient)
+    private void UpdateClient(FieldChangeInfo change, Client newClient, IEmployee editor)
     {
+
         _bd.Update(newClient, newClient.id);
-        _notifyByUpdate?.Invoke(change);
+        _notifyByUpdate?.Invoke(change with { ChangeTime = DateTime.Now, IdEntity = newClient.id, Editor = editor.Name });
     }
 
     void CheckHightLevelAccess(AccessLevel level)
