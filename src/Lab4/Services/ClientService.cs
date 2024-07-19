@@ -154,13 +154,13 @@ internal class ClientService
     void CheckHightLevelAccess(AccessLevel level)
     {
         if (level < AccessLevel.High)
-            throw new Exception();
+            throw new LowLevelAccess();
     }
 
     void CheckLowLevelAccess(AccessLevel level)
     {
         if (level < AccessLevel.Lower)
-            throw new Exception();
+            throw new LowLevelAccess();
     }
 
     Client FormatClientForLowerLevelAccess(Client client) => client with { PassportSeries = "****", PassportNumber = "******" };

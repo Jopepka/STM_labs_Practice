@@ -1,5 +1,4 @@
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 internal class ConsoleBankApp
 {
@@ -65,32 +64,41 @@ internal class ConsoleBankApp
             Console.WriteLine("1. Показать всех пользователей");
             Console.WriteLine("2. Выбрать пользователя");
             Console.WriteLine("3. Добавить пользователя");
-            Console.WriteLine("4. Сохранить базу данных");
+            Console.WriteLine("4. Сохранить базы данных");
             Console.WriteLine("5. Выход");
 
-            switch (Console.ReadLine())
+            try
             {
-                case "1":
-                    var clients = _clientService.GetAll(_employee.GetAccessLevel());
-                    Console.WriteLine(string.Join("\n", clients.Select(ClientToString)));
-                    break;
-                case "2":
-                    StartClientRedact();
-                    break;
 
-                case "3":
-                    _clientService.AddClient(GetClientFromConsole(), _employee);
-                    break;
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        var clients = _clientService.GetAll(_employee.GetAccessLevel());
+                        Console.WriteLine(string.Join("\n", clients.Select(ClientToString)));
+                        break;
+                    case "2":
+                        StartClientRedact();
+                        break;
 
-                case "4":
-                    _clientBd.Save(_clientsPath);
-                    break;
-                case "5":
-                    return;
+                    case "3":
+                        _clientService.AddClient(GetClientFromConsole(), _employee);
+                        break;
 
-                default:
-                    Console.WriteLine("Неверный номер. Попробуйте еще раз");
-                    continue;
+                    case "4":
+                        _clientBd.Save(_clientsPath);
+                        _changesBd.Save(_clientsLogsPath);
+                        break;
+                    case "5":
+                        return;
+
+                    default:
+                        Console.WriteLine("Неверный номер. Попробуйте еще раз");
+                        continue;
+                }
+            }
+            catch (LowLevelAccess e)
+            {
+                Console.WriteLine("Для операции требуется более высокий уровень доступа");
             }
         }
     }
@@ -117,6 +125,7 @@ internal class ConsoleBankApp
         Console.WriteLine("4. номер телефона");
         Console.WriteLine("5. серию паспорта (доступно только менеджеру)");
         Console.WriteLine("6. номер паспорта (доступно только менеджеру)");
+        Console.WriteLine("7. Назад");
         switch (Console.ReadLine())
         {
             case "1":
@@ -149,6 +158,8 @@ internal class ConsoleBankApp
                 string passportNumber = Console.ReadLine();
                 _clientService.UpdatePassportNumber(userId, passportNumber, _employee);
                 break;
+            case "7":
+                return;
             default:
                 return;
         }

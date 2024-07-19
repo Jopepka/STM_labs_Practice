@@ -9,10 +9,6 @@ internal class FileLoader
         return items;
     }
 
-    public static void Save<T>(IEnumerable<T> items, string fileName)
-    {
-        Console.WriteLine(items.Count());
-        var json = JsonSerializer.Serialize(items);
-        File.WriteAllText(fileName, json);
-    }
+    public static void Save<T>(IEnumerable<T> items, string fileName) =>
+        File.WriteAllText(fileName, JsonSerializer.Serialize(items));
 }
