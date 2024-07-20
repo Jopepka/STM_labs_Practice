@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "FirstName": "Amogus",
+        "MidleName": "Lupa",
+        "LastName": "Aboba",
+        "PhoneNumber": "1234556",
+        "PassportNumber": "234567",
+        "PassportSeries": "2233"
+    },
+    {
+        "id": 2,
+        "FirstName": "Amogus",
+        "MidleName": "Pupa",
+        "LastName": "Aboba",
+        "PhoneNumber": "123000963",
+        "PassportNumber": "121213",
+        "PassportSeries": "2233"
+    }
+]
