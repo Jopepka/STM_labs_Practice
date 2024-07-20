@@ -1,11 +1,11 @@
 internal class ClientService
 {
     private readonly IDataBase<Client, int> _bd;
-    private event Action<FieldChangeInfo> _notifyByUpdate;
+    private event Action<FieldChangeInfo>? NotifyAboutUpdate;
 
     public ClientService(ClientFileTable bd) => _bd = bd;
 
-    public void SubscribeOnClientUpdate(Action<FieldChangeInfo> action) => _notifyByUpdate += action;
+    public void SubscribeOnClientUpdate(Action<FieldChangeInfo> action) => NotifyAboutUpdate += action;
 
     public IEnumerable<Client> GetAll(AccessLevel level)
     {
@@ -22,8 +22,6 @@ internal class ClientService
             user = FormatClientForLowerLevelAccess(user);
         return user;
     }
-
-    private Client GetClientById(int clientId) => _bd.GetById(clientId);
 
     public void AddClient(Client client, IEmployee employee)
     {
@@ -55,12 +53,12 @@ internal class ClientService
 
         FieldChangeInfo changeInfo = new FieldChangeInfo()
         {
-            FieldName = nameof(client.MidleName),
+            FieldName = nameof(client.MiddleName),
             NewValue = newMiddleName,
-            OldValue = client.MidleName,
+            OldValue = client.MiddleName,
         };
 
-        UpdateClient(changeInfo, client with { MidleName = newMiddleName }, employee);
+        UpdateClient(changeInfo, client with { MiddleName = newMiddleName }, employee);
     }
 
     public void UpdateLastName(int clientId, string newLastName, IEmployee employee)
@@ -76,7 +74,7 @@ internal class ClientService
             OldValue = client.LastName,
         };
 
-        UpdateClient(changeInfo, client with { MidleName = newLastName }, employee);
+        UpdateClient(changeInfo, client with { MiddleName = newLastName }, employee);
     }
 
     public void UpdatePhoneNumber(int clientId, string newPhoneNumber, IEmployee employee)
@@ -127,24 +125,25 @@ internal class ClientService
         UpdateClient(changeInfo, client with { PassportNumber = newPassportNumber }, employee);
     }
 
+    private Client GetClientById(int clientId) => _bd.GetById(clientId);
+
     private void UpdateClient(FieldChangeInfo change, Client newClient, IEmployee editor)
     {
-
         _bd.Update(newClient, newClient.id);
-        _notifyByUpdate?.Invoke(change with { ChangeTime = DateTime.Now, IdEntity = newClient.id, Editor = editor.Name });
+        NotifyAboutUpdate?.Invoke(change with { ChangeTime = DateTime.Now, IdEntity = newClient.id, Editor = editor.Name });
     }
 
-    void CheckHightLevelAccess(AccessLevel level)
+    private void CheckHightLevelAccess(AccessLevel level)
     {
         if (level < AccessLevel.High)
             throw new LowLevelAccess();
     }
 
-    void CheckLowLevelAccess(AccessLevel level)
+    private void CheckLowLevelAccess(AccessLevel level)
     {
         if (level < AccessLevel.Lower)
             throw new LowLevelAccess();
     }
 
-    Client FormatClientForLowerLevelAccess(Client client) => client with { PassportSeries = "****", PassportNumber = "******" };
+    private Client FormatClientForLowerLevelAccess(Client client) => client with { PassportSeries = "****", PassportNumber = "******" };
 }

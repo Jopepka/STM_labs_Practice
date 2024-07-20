@@ -1,6 +1,6 @@
-internal abstract class AFileTable<T, K> : IDataBase<T, K>
+internal abstract class AFileTable<T, TKey> : IDataBase<T, TKey>
 {
-    protected readonly Dictionary<K, T> _items;
+    protected readonly Dictionary<TKey, T> _items;
 
     public AFileTable(string fileName) => _items = CreateDict(FileLoader.Load<T>(fileName));
 
@@ -15,22 +15,22 @@ internal abstract class AFileTable<T, K> : IDataBase<T, K>
         _items.Add(newId, SetFirstKey(value, newId));
     }
 
-    public T GetById(K key)
+    public T GetById(TKey key)
     {
         CheckItemExist(key);
         return _items[key];
     }
 
-    public void Update(T newValue, K key)
+    public void Update(T newValue, TKey key)
     {
         CheckItemExist(key);
         CheckUniqueFields(newValue, key);
         _items[key] = SetFirstKey(newValue, key);
     }
 
-    private Dictionary<K, T> CreateDict(IEnumerable<T>? items)
+    private Dictionary<TKey, T> CreateDict(IEnumerable<T>? items)
     {
-        var itemsDict = new Dictionary<K, T>();
+        var itemsDict = new Dictionary<TKey, T>();
 
         if (items is not null)
             foreach (var item in items)
@@ -39,17 +39,17 @@ internal abstract class AFileTable<T, K> : IDataBase<T, K>
         return itemsDict;
     }
 
-    private void CheckItemExist(K id)
+    private void CheckItemExist(TKey id)
     {
         if (!_items.ContainsKey(id))
             throw new ArgumentException($"Item with id = {id} not exist");
     }
 
-    protected abstract void CheckUniqueFields(T item, K ignoreKey);
+    protected abstract void CheckUniqueFields(T item, TKey ignoreKey);
 
-    protected abstract T SetFirstKey(T item, K firstKey);
+    protected abstract T SetFirstKey(T item, TKey firstKey);
 
-    protected abstract K GetFirstKey(T item);
+    protected abstract TKey GetFirstKey(T item);
 
-    protected abstract K GetNextFirstKey();
+    protected abstract TKey GetNextFirstKey();
 }

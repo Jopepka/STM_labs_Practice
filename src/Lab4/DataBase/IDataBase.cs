@@ -1,10 +1,10 @@
-internal interface IDataBase<T, K>
+internal interface IDataBase<T, TKey>
 {
     IEnumerable<T> GetAll();
 
-    T GetById(K id);
+    T GetById(TKey id);
 
-    void Update(T newValue, K id);
+    void Update(T newValue, TKey id);
 
     void Add(T value);
 }

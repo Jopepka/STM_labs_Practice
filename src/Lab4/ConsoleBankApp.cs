@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 
 internal class ConsoleBankApp
 {
@@ -27,7 +28,7 @@ internal class ConsoleBankApp
     public void Start()
     {
         SelectRole();
-        SelectOperation();
+        StartMenu();
     }
 
     private void SelectRole()
@@ -56,140 +57,179 @@ internal class ConsoleBankApp
         }
     }
 
-    private void SelectOperation()
+    private void StartMenu()
     {
         while (true)
         {
-            Console.WriteLine("Выберете действие: ");
-            Console.WriteLine("1. Показать всех пользователей");
-            Console.WriteLine("2. Выбрать пользователя");
-            Console.WriteLine("3. Добавить пользователя");
-            Console.WriteLine("4. Сохранить базы данных");
-            Console.WriteLine("5. Выход");
-
             try
             {
-
-                switch (Console.ReadLine())
-                {
-                    case "1":
-                        var clients = _clientService.GetAll(_employee.GetAccessLevel());
-                        Console.WriteLine(string.Join("\n", clients.Select(ClientToString)));
-                        break;
-                    case "2":
-                        StartClientRedact();
-                        break;
-
-                    case "3":
-                        _clientService.AddClient(GetClientFromConsole(), _employee);
-                        break;
-
-                    case "4":
-                        _clientBd.Save(_clientsPath);
-                        _changesBd.Save(_clientsLogsPath);
-                        break;
-                    case "5":
-                        return;
-
-                    default:
-                        Console.WriteLine("Неверный номер. Попробуйте еще раз");
-                        continue;
-                }
+                PrintActionMenu();
+                GetActionOperation(Console.ReadLine())();
             }
-            catch (LowLevelAccess e)
+            catch (LowLevelAccess)
             {
                 Console.WriteLine("Для операции требуется более высокий уровень доступа");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Неизвестная ошибка: \n{e}");
             }
         }
     }
 
+    private void PrintActionMenu()
+    {
+        Console.WriteLine("\n\tВыберете действие: ");
+        Console.WriteLine("1. Показать всех пользователей");
+        Console.WriteLine("2. Редактировать пользователя");
+        Console.WriteLine("3. Добавить пользователя");
+        Console.WriteLine("4. Сохранить базы данных");
+    }
+
+    private Action GetActionOperation(string operationNumber) => operationNumber switch
+    {
+        "1" => ShowAllClients,
+        "2" => StartClientRedact,
+        "3" => AddNewClient,
+        "4" => SaveDatabases,
+        _ => () => Console.WriteLine("Неверный номер")
+    };
+
+    private void ShowAllClients()
+    {
+        var clients = _clientService.GetAll(_employee.GetAccessLevel());
+        Console.WriteLine(string.Join("\n\n", clients.Select(ClientToString)));
+    }
+
+    private void AddNewClient() => _clientService.AddClient(GetClientFromConsole(), _employee);
+
+    private void SaveDatabases()
+    {
+        _clientBd.Save(_clientsPath);
+        _changesBd.Save(_clientsLogsPath);
+    }
+
     private void StartClientRedact()
+    {
+        var client = GetClient();
+        WriteClient(client);
+        WriteClientChangesIfChangesExist(client.id);
+
+        ShowChangesMenu();
+        GetRedactUserOperation(Console.ReadLine())(client.id);
+    }
+
+    private Client GetClient()
     {
         Console.WriteLine("Введите id пользователя: ");
         int userId = GetNumberFromConsole<int>();
+        return _clientService.GetClientById(userId, _employee.GetAccessLevel());
+    }
 
-        var user = _clientService.GetClientById(userId, _employee.GetAccessLevel());
-        var userChanges = _changesService.FindByClientId(userId);
-        Console.WriteLine("Выбранный пользователь:");
-        Console.WriteLine(ClientToString(user));
+    private void WriteClient(Client client)
+    {
+        Console.WriteLine("Выбранный клиент:");
+        Console.WriteLine(ClientToString(client));
+    }
+
+    private void WriteClientChangesIfChangesExist(int clientId)
+    {
+        var userChanges = _changesService.FindByClientId(clientId);
         if (userChanges.Count() != 0)
         {
             Console.WriteLine("Последние изменения:");
             Console.WriteLine(ClientChangesLogToString(userChanges.MaxBy(item => item.ChangeTime)));
         }
+    }
 
-        Console.WriteLine("Изменить:");
+    private void ShowChangesMenu()
+    {
+        Console.WriteLine("\n\tИзменить:");
         Console.WriteLine("1. фамилию (доступно только менеджеру)");
         Console.WriteLine("2. имя (доступно только менеджеру)");
         Console.WriteLine("3. отчество (доступно только менеджеру)");
         Console.WriteLine("4. номер телефона");
         Console.WriteLine("5. серию паспорта (доступно только менеджеру)");
         Console.WriteLine("6. номер паспорта (доступно только менеджеру)");
-        Console.WriteLine("7. Назад");
-        switch (Console.ReadLine())
-        {
-            case "1":
-                Console.WriteLine("Введите фамилию");
-                string firstName = Console.ReadLine();
-                _clientService.UpdateFirstName(userId, firstName, _employee);
-                break;
-            case "2":
-                Console.WriteLine("Введите имя");
-                string middleName = Console.ReadLine();
-                _clientService.UpdateMiddleName(userId, middleName, _employee);
-                break;
-            case "3":
-                Console.WriteLine("Введите отчество");
-                string lastName = Console.ReadLine();
-                _clientService.UpdateLastName(userId, lastName, _employee);
-                break;
-            case "4":
-                Console.WriteLine("Введите номер телефона");
-                string phoneNumber = Console.ReadLine();
-                _clientService.UpdatePhoneNumber(userId, phoneNumber, _employee);
-                break;
-            case "5":
-                Console.WriteLine("Введите серию паспорта");
-                string passportSeries = Console.ReadLine();
-                _clientService.UpdatePassportSeries(userId, passportSeries, _employee);
-                break;
-            case "6":
-                Console.WriteLine("Введите номер паспорта");
-                string passportNumber = Console.ReadLine();
-                _clientService.UpdatePassportNumber(userId, passportNumber, _employee);
-                break;
-            case "7":
-                return;
-            default:
-                return;
-        }
-        Console.WriteLine("Данные обновлены");
+    }
+
+    private Action<int> GetRedactUserOperation(string operationNumber) => operationNumber switch
+    {
+        "1" => UpdateClientFirstName,
+        "2" => UpdateClientMiddleName,
+        "3" => UpdateClientLastName,
+        "4" => UpdateClientPhoneNumber,
+        "5" => UpdateClientPassportSeries,
+        "6" => UpdateCLientPassportNumber,
+        _ => (int plug) => Console.WriteLine("Неверный номер")
+    };
+
+    private void UpdateClientFirstName(int userId)
+    {
+        Console.WriteLine("Введите фамилию");
+        string firstName = Console.ReadLine();
+        _clientService.UpdateFirstName(userId, firstName, _employee);
+    }
+
+    private void UpdateClientMiddleName(int userId)
+    {
+        Console.WriteLine("Введите имя");
+        string middleName = Console.ReadLine();
+        _clientService.UpdateMiddleName(userId, middleName, _employee);
+    }
+
+    private void UpdateClientLastName(int userId)
+    {
+        Console.WriteLine("Введите отчество");
+        string lastName = Console.ReadLine();
+        _clientService.UpdateLastName(userId, lastName, _employee);
+    }
+
+    private void UpdateClientPhoneNumber(int userId)
+    {
+        Console.WriteLine("Введите номер телефона");
+        string phoneNumber = Console.ReadLine();
+        _clientService.UpdatePhoneNumber(userId, phoneNumber, _employee);
+    }
+
+    private void UpdateClientPassportSeries(int userId)
+    {
+        Console.WriteLine("Введите серию паспорта");
+        string passportSeries = Console.ReadLine();
+        _clientService.UpdatePassportSeries(userId, passportSeries, _employee);
+    }
+
+    private void UpdateCLientPassportNumber(int userId)
+    {
+        Console.WriteLine("Введите номер паспорта");
+        string passportNumber = Console.ReadLine();
+        _clientService.UpdatePassportNumber(userId, passportNumber, _employee);
     }
 
     private Client GetClientFromConsole()
     {
-        Console.WriteLine("Введите фамилию");
+        Console.WriteLine("Введите фамилию:");
         var firstName = Console.ReadLine();
 
-        Console.WriteLine("Введите имя");
+        Console.WriteLine("Введите имя:");
         var middleName = Console.ReadLine();
 
-        Console.WriteLine("ВВедите отчество");
+        Console.WriteLine("ВВедите отчество:");
         var LastName = Console.ReadLine();
 
-        Console.WriteLine("Введите номер телефона");
+        Console.WriteLine("Введите номер телефона:");
         var phoneNumber = Console.ReadLine();
 
-        Console.WriteLine("Введите серию паспорта");
+        Console.WriteLine("Введите серию паспорта:");
         var passportSeries = Console.ReadLine();
 
-        Console.WriteLine("Введите номер паспорта");
+        Console.WriteLine("Введите номер паспорта:");
         var passportNumber = Console.ReadLine();
 
         return new Client()
         {
             FirstName = firstName,
-            MidleName = middleName,
+            MiddleName = middleName,
             LastName = LastName,
             PhoneNumber = phoneNumber,
             PassportSeries = passportSeries,
@@ -199,8 +239,8 @@ internal class ConsoleBankApp
 
     private string ClientToString(Client client)
     {
-        string res = $"id: {client.id}";
-        res += $"\nName: {client.FirstName} {client.MidleName} {client.LastName}";
+        string res = $"Client Id: {client.id}";
+        res += $"\nName: {client.FirstName} {client.MiddleName} {client.LastName}";
         res += $"\nPhone: {client.PhoneNumber}";
         res += $"\nPassport: {client.PassportNumber} {client.PassportSeries}";
         return res;
@@ -209,12 +249,12 @@ internal class ConsoleBankApp
     private string ClientChangesLogToString(FieldChangeInfo changeInfo)
     {
 
-        string res = "Changes";
-        res += $"\nid: {changeInfo.Id}";
-        res += $"\nClientId: {changeInfo.IdEntity}";
+        string res = $"Record Id: {changeInfo.Id}";
+        res += $"\nClient Id: {changeInfo.IdEntity}";
         res += $"\nUpdate time: {changeInfo.ChangeTime}";
         res += $"\nEditor: {changeInfo.Editor}";
-        res += $"\nField '{changeInfo.FieldName}': {changeInfo.OldValue} -> {changeInfo.NewValue}";
+        res += $"\nField name: {changeInfo.FieldName}";
+        res += $"\nValue: '{changeInfo.FieldName}': {changeInfo.OldValue} -> {changeInfo.NewValue}";
         return res;
     }
 
