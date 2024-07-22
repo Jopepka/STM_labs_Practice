@@ -1,6 +1,4 @@
 using System.Collections;
-using System.ComponentModel.DataAnnotations;
-using System.Dynamic;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -15,12 +13,14 @@ public class MyJsonSerializer
         else if (obj.GetType().IsArray)
             return SerializeArray((IEnumerable)obj, maxDepth);
         else if (obj.GetType() != typeof(string) && !obj.GetType().IsPrimitive)
-            return SerializeObj(obj, maxDepth);
+            return SerializeComplexObject(obj, maxDepth);
+        else if (obj.GetType() == typeof(string))
+            return $"\"{obj}\"";
         else
             return obj.ToString();
     }
 
-    private static string SerializeObj(object obj, int maxDepth)
+    private static string SerializeComplexObject(object obj, int maxDepth)
     {
         var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
@@ -39,7 +39,7 @@ public class MyJsonSerializer
     }
 
     private static string DictToString(Dictionary<string, string> dict) =>
-        "{" + string.Join(", ", dict.Select(keyValue => $"{keyValue.Key}: {keyValue.Value}")) + "}";
+        "{" + string.Join(", ", dict.Select(keyValue => $"\"{keyValue.Key}\": {keyValue.Value}")) + "}";
 
     private static string SerializeArray(IEnumerable array, int maxDepth)
     {
