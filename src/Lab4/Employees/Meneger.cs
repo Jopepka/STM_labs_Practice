@@ -2,5 +2,5 @@ internal class Meneger : Consultant
 {
     public Meneger(string name) : base(name) { }
 
-    public override AccessLevel GetAccessLevel() => AccessLevel.High;
+    public override AccessLevel AccessLevel => AccessLevel.High;
 }

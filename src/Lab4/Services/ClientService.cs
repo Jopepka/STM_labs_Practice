@@ -25,13 +25,13 @@ internal class ClientService
 
     public void AddClient(Client client, IEmployee employee)
     {
-        CheckLowLevelAccess(employee.GetAccessLevel());
+        CheckLowLevelAccess(employee.AccessLevel);
         _bd.Add(client);
     }
 
     public void UpdateFirstName(int clientId, string newName, IEmployee employee)
     {
-        CheckHightLevelAccess(employee.GetAccessLevel());
+        CheckHightLevelAccess(employee.AccessLevel);
 
         var client = GetClientById(clientId);
 
@@ -47,7 +47,7 @@ internal class ClientService
 
     public void UpdateMiddleName(int clientId, string newMiddleName, IEmployee employee)
     {
-        CheckHightLevelAccess(employee.GetAccessLevel());
+        CheckHightLevelAccess(employee.AccessLevel);
 
         var client = GetClientById(clientId);
 
@@ -63,7 +63,7 @@ internal class ClientService
 
     public void UpdateLastName(int clientId, string newLastName, IEmployee employee)
     {
-        CheckHightLevelAccess(employee.GetAccessLevel());
+        CheckHightLevelAccess(employee.AccessLevel);
 
         var client = GetClientById(clientId);
 
@@ -79,7 +79,7 @@ internal class ClientService
 
     public void UpdatePhoneNumber(int clientId, string newPhoneNumber, IEmployee employee)
     {
-        CheckLowLevelAccess(employee.GetAccessLevel());
+        CheckLowLevelAccess(employee.AccessLevel);
 
         var client = GetClientById(clientId);
 
@@ -95,7 +95,7 @@ internal class ClientService
 
     public void UpdatePassportSeries(int clientId, string newPassportSeries, IEmployee employee)
     {
-        CheckHightLevelAccess(employee.GetAccessLevel());
+        CheckHightLevelAccess(employee.AccessLevel);
 
         var client = GetClientById(clientId);
 
@@ -111,7 +111,7 @@ internal class ClientService
 
     public void UpdatePassportNumber(int clientId, string newPassportNumber, IEmployee employee)
     {
-        CheckHightLevelAccess(employee.GetAccessLevel());
+        CheckHightLevelAccess(employee.AccessLevel);
 
         var client = GetClientById(clientId);
 

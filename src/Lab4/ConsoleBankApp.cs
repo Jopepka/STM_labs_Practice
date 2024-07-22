@@ -1,5 +1,4 @@
 using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 
 internal class ConsoleBankApp
 {
@@ -97,7 +96,7 @@ internal class ConsoleBankApp
 
     private void ShowAllClients()
     {
-        var clients = _clientService.GetAll(_employee.GetAccessLevel());
+        var clients = _clientService.GetAll(_employee.AccessLevel);
         Console.WriteLine(string.Join("\n\n", clients.Select(ClientToString)));
     }
 
@@ -123,7 +122,7 @@ internal class ConsoleBankApp
     {
         Console.WriteLine("Введите id пользователя: ");
         int userId = GetNumberFromConsole<int>();
-        return _clientService.GetClientById(userId, _employee.GetAccessLevel());
+        return _clientService.GetClientById(userId, _employee.AccessLevel);
     }
 
     private void WriteClient(Client client)

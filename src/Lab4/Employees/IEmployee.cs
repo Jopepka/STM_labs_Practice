@@ -2,5 +2,5 @@ internal interface IEmployee
 {
     string Name { get; }
 
-    AccessLevel GetAccessLevel();
+    AccessLevel AccessLevel { get; }
 }

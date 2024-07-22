@@ -4,5 +4,5 @@ internal class Consultant : IEmployee
 
     public Consultant(string name) => Name = name;
 
-    public virtual AccessLevel GetAccessLevel() => AccessLevel.Lower;
+    public virtual AccessLevel AccessLevel => AccessLevel.Lower;
 }
