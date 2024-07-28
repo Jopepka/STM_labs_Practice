@@ -1,13 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-
-class Program
+﻿class Program
 {
     static void Main()
     {
         Console.WriteLine("Task PLINQ");
-        // У меня выдает при последовательном 420мс, при параллельном 150мс
+        // У меня выдает при последовательном ~250-340мс, при параллельном ~150-180мс
         new PlinqExample().Start();
     }
 }
