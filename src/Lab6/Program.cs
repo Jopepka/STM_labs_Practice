@@ -1,8 +1,6 @@
-﻿namespace Lab6;
-
-class Program
+﻿class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
         var task1To8 = new Task1To8(customers, orders, cities);
 
@@ -29,6 +27,10 @@ class Program
 
         Console.WriteLine("\nTask 8. CustomersWithMinOrdersSum");
         WriteEnumerableToConsole(task1To8.Task8_3CustomersWithMinOrdersSum());
+
+      Console.WriteLine("Task PLINQ");
+        // У меня выдает при последовательном ~250-340мс, при параллельном ~150-180мс
+        new PlinqExample().Start();
     }
 
     static void WriteEnumerableToConsole<T>(IEnumerable<T> values) =>
