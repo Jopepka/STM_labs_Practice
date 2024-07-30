@@ -12,29 +12,22 @@ public class Task1To8
     }
 
     public IEnumerable<Customer> Task1_CustomersInLossAngeles() =>
-        _cities.Where(city => city.Name == "Лос-Анджелес").SelectMany(city => _customers.Where(customer => customer.CityID == city.ID));
+        _customers.Where(customer => customer.City?.Name == "Лос-Анджелес");
 
     public int Task2_CountClientsWithoutOrders() =>
         _customers.Where(customer => !CustomerOrders(customer).Any()).Count();
 
     public IEnumerable<Order> CustomerOrders(Customer customer) =>
-        _orders.Where(order => order.CustomerID == customer.ID);
+        _orders.Where(order => order.Customer?.ID == customer.ID);
 
-    public IEnumerable<CustomerInfo> Task3_ClientsInfo()
-    {
-        var item1 = _customers
-        .Select(customer => new { customer, city = _cities.Find(city => city.ID == customer.CityID) }).ToArray();
-
-        var item2 = item1.Select(item =>
+    public IEnumerable<CustomerInfo> Task3_ClientsInfo() =>
+        _customers.Select(customer =>
             new CustomerInfo(
-                CustomerName: item.customer.Name,
-                CityName: item.city.Name,
-                CityCode: item.city.CityCode,
-                OrdersCount: CustomerOrders(item.customer).Count(),
-                LastOrderDate: CustomerOrders(item.customer).Max(order => order?.Date)));
-
-        return item2;
-    }
+                CustomerName: customer.Name,
+                CityName: customer.City?.Name,
+                CityCode: customer.City?.CityCode,
+                OrdersCount: CustomerOrders(customer).Count(),
+                LastOrderDate: CustomerOrders(customer).Max(order => order?.Date)));
 
     public record CustomerInfo(string? CustomerName, string? CityName, int? CityCode, int? OrdersCount, DateTime? LastOrderDate)
     {
@@ -46,35 +39,35 @@ public class Task1To8
         _customers.Where(customer => CustomerOrders(customer).Count() > 2).OrderBy(customer => customer.Name);
 
     public IEnumerable<object> Task5_GroupClientsByCity() =>
-        _cities.GroupJoin(
-            _customers,
-            city => city.ID,
-            customer => customer.CityID,
-            (City, Customers) => new PopulationCity(City, Customers));
+        _customers.GroupBy(customer => customer.City).Select(item => new PopulationCity(item.Key, item.ToArray()));
     public class PopulationCity(City City, IEnumerable<Customer> Customers)
     {
         public override string ToString() => $"City: {City}\nCustomers:\n\t{string.Join("\n\t", Customers)}";
     }
 
     public IEnumerable<Customer> Task6_CustomersWithFewerOrdersThanCityAverage() =>
-        _cities
-            .GroupJoin(_customers, city => city.ID, customer => customer.CityID, (city, customers) => new { city, customers })
-            .SelectMany(item => item.customers.Where(customer => CustomerOrders(customer).Count() < item.customers.Average(customer => CustomerOrders(customer).Count())));
-
-
+        _customers
+            .GroupBy(customer => customer.City)
+            .Select(item => new
+            {
+                city = item.Key,
+                customers = item.ToArray(),
+                averageCity = item.ToArray().Average(customer => CustomerOrders(customer).Count())
+            })
+            .SelectMany(item => item.customers.Where(customer => CustomerOrders(customer).Count() < item.averageCity));
 
     public City Task7_CityWithMaxAmountMoney() =>
         _cities
-            .GroupJoin(_customers, city => city.ID, customer => customer.CityID, (city, customers) => new
+            .GroupJoin(_customers, city => city, customer => customer.City, (city, customers) => new
             {
                 city,
                 countManey = customers.Sum(customer => CustomerOrders(customer).Sum(order => order.Price))
             })
             .MaxBy(item => item.countManey).city;
 
-    public IEnumerable<object> Task8_CustomersWithMinOrdersSum() =>
+    public IEnumerable<object> Task8_3CustomersWithMinOrdersSum() =>
         _customers
-            .GroupJoin(_orders, customer => customer.ID, order => order.CustomerID, (customer, orders) => new
+            .GroupJoin(_orders, customer => customer, order => order.Customer, (customer, orders) => new
             {
                 customer,
                 TotalSum = orders.Sum(order => order.Price),
