@@ -1,10 +1,10 @@
-﻿namespace Lab6;
-
-class Program
+﻿class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-
+        Console.WriteLine("Task PLINQ");
+        // У меня выдает при последовательном ~250-340мс, при параллельном ~150-180мс
+        new PlinqExample().Start();
     }
 
     static List<Customer> customers = new List<Customer>
