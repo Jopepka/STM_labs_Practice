@@ -5,8 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab7_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="WPF Threads" Height="450" Width="800" Closed="Window_Closed">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*"></ColumnDefinition>
+      <ColumnDefinition Width="3*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
 
+    <StackPanel>
+      <GroupBox Header="Menu">
+        <StackPanel>
+          <Button Name="StartButton" Content="Start" Click="StartButton_Click" />
+          <Button Name="StopButton" Content="Stop" Click="StopButton_Click" />    
+        </StackPanel>
+      </GroupBox>
+      
+      <GroupBox Header="App settings">
+        <StackPanel Orientation="vertical">
+          <Label Content="Items per iteration"/>
+          <TextBox x:Name="ItemsPerIterationTextBox" Width="100" Margin="5" />
+
+          <Label Content="Delay time"/>
+          <TextBox x:Name="DelayTextBox" Width="100" Margin="5" />
+        </StackPanel>
+      </GroupBox>
+
+      <GroupBox Header="Start settings">
+        <StackPanel Orientation="vertical">
+          <Label Content="Thread Count"/>
+          <TextBox x:Name="ThreadCountTextBox" Width="100" Margin="5"/>
+        </StackPanel>
+      </GroupBox>
+
+      <GroupBox Header="Output threads">
+        <StackPanel Orientation="vertical">
+          <Label Content="Threads"/>
+          <ComboBox Name="ThreadComboBox"/>
+        </StackPanel>
+      </GroupBox>
+    </StackPanel>
+
+    <Grid Grid.Row ="1" Grid.Column ="2">
+      <GroupBox Header ="Output text">
+        <TextBox x:Name="OutputTextBox" AcceptsReturn="True" TextWrapping="Wrap" />
+      </GroupBox>  
     </Grid>
+  </Grid>
 </Window>
