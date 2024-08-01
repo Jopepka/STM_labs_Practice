@@ -1,9 +1,5 @@
 ﻿using Lab7_Console;
-using Lab7_Console.Task;
-using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-
 class Program
 {
     static List<Thread> threads = new List<Thread>();
@@ -16,7 +12,7 @@ class Program
 
     static void Main(string[] args)
     {
-        Console.OutputEncoding = Encoding.Default;
+        Console.OutputEncoding = Encoding.UTF8;
 
         filePath = args[0];
         millisecondTactDelay = int.Parse(args[1]);

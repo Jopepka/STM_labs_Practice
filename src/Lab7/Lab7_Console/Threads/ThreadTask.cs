@@ -1,6 +1,4 @@
-﻿using Lab7_Console.Task;
-
-namespace Lab7_Console
+﻿namespace Lab7_Console
 {
     internal class ThreadTask
     {
@@ -9,11 +7,12 @@ namespace Lab7_Console
 
         public ThreadTask(IThreadControlled doTask) => _doTask = doTask;
 
-        public void ThreadStart()
+        public void ThreadStart(string threadName)
         {
             if (_thread == null)
             {
                 _thread = new Thread(_doTask.Start);
+                _thread.Name = threadName;
                 _thread.Start();
             }
         }

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Lab7_Console.Task
+﻿namespace Lab7_Console
 {
     internal class ReadFile : IThreadControlled
     {
@@ -20,7 +18,7 @@ namespace Lab7_Console.Task
 
         public void Start()
         {
-            using StreamReader sr = new StreamReader(_filePath, Encoding.UTF8);
+            using StreamReader sr = new StreamReader(_filePath);
             while (!sr.EndOfStream && !IsStop)
             {
                 for (int i = 0; i < _itemsPerTact && !sr.EndOfStream; i++)

@@ -1,4 +1,4 @@
-﻿using Lab7_Console.Task;
+﻿using System.Diagnostics;
 
 namespace Lab7_Console
 {
@@ -7,6 +7,8 @@ namespace Lab7_Console
         private Func<IThreadControlled> GetNewTask;
         private List<ThreadTask> _threads = new List<ThreadTask>();
         private event Action<string>? Notify;
+
+        private int UniqueThreadID = 1;
 
         public ThreadManager(Func<IThreadControlled> GetNewTask) => this.GetNewTask = GetNewTask;
 
@@ -43,7 +45,7 @@ namespace Lab7_Console
         {
             var thread = new ThreadTask(GetNewTask());
             _threads.Add(thread);
-            thread.ThreadStart();
+            thread.ThreadStart(UniqueThreadID++.ToString());
 
             LogCommand("Thread Main: New thread started");
         }
@@ -57,7 +59,10 @@ namespace Lab7_Console
                 LogCommand("Thread Main: Last thread stopped");
             }
             else
-                LogCommand("No threads to stop");
+            {
+                LogCommand("Thread Main: Kill current process");
+                Process.GetCurrentProcess().Kill();
+            }
         }
 
         private void LogCommand(string message) => Notify?.Invoke(message);
