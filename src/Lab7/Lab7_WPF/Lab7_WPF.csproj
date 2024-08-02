@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lab7_Console\Lab7_Console.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="MyDiploma.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

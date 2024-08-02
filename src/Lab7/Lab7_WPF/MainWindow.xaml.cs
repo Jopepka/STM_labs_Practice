@@ -27,7 +27,7 @@ namespace Lab7_WPF
             ItemsPerIterationTextBox.Text = "1";
             DelayTextBox.Text = "1000";
             ThreadCountTextBox.Text = "1";
-            ConsolePathTextBox.Text = "";
+            ConsolePathTextBox.Text = "Lab7_Console.exe";
             TextPathTextBox.Text = "MyDiploma.txt";
 
             uiUpdateTimer.Interval = TimeSpan.FromMilliseconds(500);

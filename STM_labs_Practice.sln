@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio Version 17
+# Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7AA3EDF8-8C79-4A21-A313-34F7913AE029}"
@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab7", "Lab7", "{024A60AE-D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab7_Console", "src\Lab7\Lab7_Console\Lab7_Console.csproj", "{DAA1C328-0019-43EF-8517-FEB3E6E27E29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab7_WPF", "src\Lab7\Lab7_WPF\Lab7_WPF.csproj", "{7B48B1C8-1C0B-43A6-9E5E-7F40E7614CF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab7_WPF", "src\Lab7\Lab7_WPF\Lab7_WPF.csproj", "{7B48B1C8-1C0B-43A6-9E5E-7F40E7614CF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,5 +74,9 @@ Global
 		{58DE76EF-99E5-4CD6-9A22-3C43FC6427F4} = {7AA3EDF8-8C79-4A21-A313-34F7913AE029}
 		{024A60AE-D42F-487C-A6F6-4A6D5100D8EE} = {7AA3EDF8-8C79-4A21-A313-34F7913AE029}
 		{DAA1C328-0019-43EF-8517-FEB3E6E27E29} = {024A60AE-D42F-487C-A6F6-4A6D5100D8EE}
+		{7B48B1C8-1C0B-43A6-9E5E-7F40E7614CF3} = {024A60AE-D42F-487C-A6F6-4A6D5100D8EE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {46A78098-2E45-4E4E-B1B7-8D2F546C47C3}
 	EndGlobalSection
 EndGlobal

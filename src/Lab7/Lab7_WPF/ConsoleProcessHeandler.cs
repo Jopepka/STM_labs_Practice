@@ -6,22 +6,7 @@ namespace Lab7_WPF
     internal class ConsoleProcessHeandler
     {
         private Process? _consoleProcess;
-        public int CountThreads { get; private set; }
-
-        public bool IsRun
-        {
-            get
-            {
-                try
-                {
-                    return !_consoleProcess.HasExited;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-        }
+        public bool IsRun { get => !_consoleProcess?.HasExited ?? false; }
 
         public void StartProcess(string consolePath, string textPath, int tactReadDelay, int countReadCharsInTact, DataReceivedEventHandler handler)
         {
@@ -45,7 +30,10 @@ namespace Lab7_WPF
             _consoleProcess.Start();
             _consoleProcess.BeginErrorReadLine();
             _consoleProcess.BeginOutputReadLine();
+            _consoleProcess.Exited += OnExited;
         }
+
+        private void OnExited(object obj, EventArgs e) => _consoleProcess = null;
 
         public void StartThread() => SendCommandToConsole($"START_NEW_THREAD");
 
