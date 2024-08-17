@@ -27,7 +27,7 @@ public class ApplicationContext : DbContext
 
         modelBuilder.Entity<Category>().HasData(
             new Category { Id = 1, CategoryName = "Food" },
-            new Category { Id = 2, CategoryName = "Semi-finished products wholesale", ParentCategoryId = 1 },
+            new Category { Id = 2, CategoryName = "Semi-finished products", ParentCategoryId = 1 },
             new Category { Id = 3, CategoryName = "Meat products", ParentCategoryId = 1 },
             new Category { Id = 4, CategoryName = "Automobiles" },
             new Category { Id = 5, CategoryName = "Lada", ParentCategoryId = 4 },
@@ -42,11 +42,12 @@ public class ApplicationContext : DbContext
         );
 
         modelBuilder.Entity<CompanyCategory>().HasData(
-            new CompanyCategory { Id = 1, CompanyId = 1, CategoryId = 2 },
-            new CompanyCategory { Id = 2, CompanyId = 1, CategoryId = 3 },
-            new CompanyCategory { Id = 3, CompanyId = 2, CategoryId = 4 },
-            new CompanyCategory { Id = 4, CompanyId = 2, CategoryId = 5 },
-            new CompanyCategory { Id = 5, CompanyId = 2, CategoryId = 6 }
+            new CompanyCategory { Id = 1, CompanyId = 1, CategoryId = 1 },
+            new CompanyCategory { Id = 2, CompanyId = 1, CategoryId = 2 },
+            new CompanyCategory { Id = 3, CompanyId = 1, CategoryId = 3 },
+            new CompanyCategory { Id = 4, CompanyId = 2, CategoryId = 4 },
+            new CompanyCategory { Id = 5, CompanyId = 2, CategoryId = 5 },
+            new CompanyCategory { Id = 6, CompanyId = 2, CategoryId = 6 }
         );
 
         modelBuilder.Entity<CompanyPhone>().HasData(

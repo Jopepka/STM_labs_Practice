@@ -89,7 +89,7 @@ namespace Infrastructure.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CategoryName = "Semi-finished products wholesale",
+                            CategoryName = "Semi-finished products",
                             ParentCategoryId = 1
                         },
                         new
@@ -189,30 +189,36 @@ namespace Infrastructure.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CategoryId = 2,
+                            CategoryId = 1,
                             CompanyId = 1
                         },
                         new
                         {
                             Id = 2,
-                            CategoryId = 3,
+                            CategoryId = 2,
                             CompanyId = 1
                         },
                         new
                         {
                             Id = 3,
+                            CategoryId = 3,
+                            CompanyId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
                             CategoryId = 4,
                             CompanyId = 2
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 5,
                             CategoryId = 5,
                             CompanyId = 2
                         },
                         new
                         {
-                            Id = 5,
+                            Id = 6,
                             CategoryId = 6,
                             CompanyId = 2
                         });

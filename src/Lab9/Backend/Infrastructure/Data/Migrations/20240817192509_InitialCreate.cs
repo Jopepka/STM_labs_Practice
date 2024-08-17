@@ -111,7 +111,7 @@ namespace Infrastructure.Data.Migrations
                 values: new object[,]
                 {
                     { 1, "Food", null },
-                    { 2, "Semi-finished products wholesale", 1 },
+                    { 2, "Semi-finished products", 1 },
                     { 3, "Meat products", 1 },
                     { 4, "Automobiles", null },
                     { 5, "Lada", 4 },
@@ -145,11 +145,12 @@ namespace Infrastructure.Data.Migrations
                 columns: new[] { "Id", "CategoryId", "CompanyId" },
                 values: new object[,]
                 {
-                    { 1, 2, 1 },
-                    { 2, 3, 1 },
-                    { 3, 4, 2 },
-                    { 4, 5, 2 },
-                    { 5, 6, 2 }
+                    { 1, 1, 1 },
+                    { 2, 2, 1 },
+                    { 3, 3, 1 },
+                    { 4, 4, 2 },
+                    { 5, 5, 2 },
+                    { 6, 6, 2 }
                 });
 
             migrationBuilder.CreateIndex(
