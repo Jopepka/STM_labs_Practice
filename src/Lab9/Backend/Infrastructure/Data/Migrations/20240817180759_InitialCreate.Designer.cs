@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240817141919_InitialCreate")]
+    [Migration("20240817180759_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -105,6 +105,30 @@ namespace Infrastructure.Data.Migrations
                         {
                             Id = 4,
                             CategoryName = "Automobiles"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryName = "Lada",
+                            ParentCategoryId = 4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryName = "Lada Granta",
+                            ParentCategoryId = 5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryName = "Lada Largus",
+                            ParentCategoryId = 5
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryName = "Audi",
+                            ParentCategoryId = 4
                         });
                 });
 
@@ -181,6 +205,18 @@ namespace Infrastructure.Data.Migrations
                         {
                             Id = 3,
                             CategoryId = 4,
+                            CompanyId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 5,
+                            CompanyId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 6,
                             CompanyId = 2
                         });
                 });

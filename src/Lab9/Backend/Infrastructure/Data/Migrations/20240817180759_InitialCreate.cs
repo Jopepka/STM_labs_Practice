@@ -113,7 +113,11 @@ namespace Infrastructure.Data.Migrations
                     { 1, "Food", null },
                     { 2, "Semi-finished products wholesale", 1 },
                     { 3, "Meat products", 1 },
-                    { 4, "Automobiles", null }
+                    { 4, "Automobiles", null },
+                    { 5, "Lada", 4 },
+                    { 6, "Lada Granta", 5 },
+                    { 7, "Lada Largus", 5 },
+                    { 8, "Audi", 4 }
                 });
 
             migrationBuilder.InsertData(
@@ -143,7 +147,9 @@ namespace Infrastructure.Data.Migrations
                 {
                     { 1, 2, 1 },
                     { 2, 3, 1 },
-                    { 3, 4, 2 }
+                    { 3, 4, 2 },
+                    { 4, 5, 2 },
+                    { 5, 6, 2 }
                 });
 
             migrationBuilder.CreateIndex(

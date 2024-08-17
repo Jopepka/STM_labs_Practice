@@ -18,34 +18,24 @@ namespace Presentation
 
             builder.Services.AddControllers();
 
-            builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Company API", Version = "v1" }));
-
-            // Регистрация репозиториев
             builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
             builder.Services.AddScoped<IBuildingRepository, BuildingRepository>();
 
-            // Регистрация сервисов
             builder.Services.AddScoped<ICompanyService, CompanyService>();
             builder.Services.AddScoped<IBuildingService, BuildingService>();
 
+            builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Company API", Version = "v1" }));
+
             builder.Services.AddEndpointsApiExplorer();
+
             var app = builder.Build();
 
-            // Конфигурация HTTP-запросов
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                //app.UseDeveloperExceptionPage();
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c =>
-                //{
-                //c.SwaggerEndpoint("/swagger/v1/swagger.json", "Company API v1");
-                //c.RoutePrefix = string.Empty;
-                //});
             }
 
-            //app.UseRouting();
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
