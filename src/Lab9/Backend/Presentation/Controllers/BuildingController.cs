@@ -16,9 +16,9 @@ public class BuildingController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Company>> GetAllBuildings()
+    public async Task<ActionResult<IEnumerable<Building>>> GetAllBuildings()
     {
-        var company = await _buildingService.GetAllBuildingsAsync();
-        return company == null ? NoContent() : Ok(company);
+        var buildings = await _buildingService.GetAllBuildingsAsync();
+        return buildings == null ? NoContent() : Ok(buildings);
     }
 }
