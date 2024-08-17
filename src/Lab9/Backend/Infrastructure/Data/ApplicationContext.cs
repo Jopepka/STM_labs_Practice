@@ -11,7 +11,10 @@ public class ApplicationContext : DbContext
     public DbSet<Building> Buildings { get; set; }
     public DbSet<Category> Categories { get; set; }
 
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+    {
+        Database.EnsureCreated();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

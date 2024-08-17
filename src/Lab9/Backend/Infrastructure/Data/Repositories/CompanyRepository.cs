@@ -34,4 +34,9 @@ public class CompanyRepository : ICompanyRepository
             .Where(company => EF.Functions.Like(company.CompanyName, $"%{name}%"))
             .ToListAsync();
     }
+
+    public async Task<Company> GetByIdAsync(int id)
+    {
+        return await _context.Companies.FindAsync(id);
+    }
 }
