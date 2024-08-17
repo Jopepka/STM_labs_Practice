@@ -1,9 +1,11 @@
 using Domain.Models;
 
-namespace Domain.Repositories;
+namespace Application.Services;
 
-public interface ICompanyRepository
+public interface ICompanyService
 {
+    Task<Company> GetCompanyById(int companyId);
+
     Task<IEnumerable<Company>> GetCompaniesInBuildingAsync(int buildingId);
 
     Task<IEnumerable<Company>> GetCompaniesInCategoryAsync(int categoryId);
@@ -11,6 +13,4 @@ public interface ICompanyRepository
     Task<IEnumerable<Company>> GetCompaniesNearLocationAsync(double latitude, double longitude, double radius);
 
     Task<IEnumerable<Company>> GetCompaniesByNameAsync(string name);
-
-    Task<Company> GetByIdAsync(int companyId);
 }
